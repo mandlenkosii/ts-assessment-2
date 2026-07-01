@@ -11,7 +11,8 @@ import type { Product } from "./01-generic-constraints.ts";
  * field is optional, and returns the merged product. Use Partial. */
 
 // TODO: changes should be Partial<Product>; returns Product
-export function updateProduct(product: Product, changes: ___): ___ {
+export function updateProduct(product: Product, changes: Partial<Product>): Product {
+  return { ...product, ...changes };
   // TODO: merge and return
 }
 
@@ -20,7 +21,7 @@ export function updateProduct(product: Product, changes: ___): ___ {
  * with Pick (do NOT retype the fields by hand). */
 
 // TODO: Pick<Product, "id" | "name">
-export type ProductPreview = ___;
+export type ProductPreview = Pick<Product, "id" | "name">;
 export const preview: ProductPreview = { id: 1, name: "Mug" };
 
 /* ---- 2c. Omit ----
@@ -28,7 +29,7 @@ export const preview: ProductPreview = { id: 1, name: "Mug" };
  * Build it with Omit. */
 
 // TODO: Omit<Product, "id">
-export type NewProduct = ___;
+export type NewProduct = Omit<Product, "id">;
 export const draft: NewProduct = { name: "Pen", price: 15, inStock: true };
 
 /* ---- 2d. Record ----
@@ -37,11 +38,14 @@ export const draft: NewProduct = { name: "Pen", price: 15, inStock: true };
  * array of products into that map. */
 
 // TODO: Record<string, number>
-export type PriceList = ___;
+export type PriceList = Record<string, number>;
 
 // TODO: build a PriceList from products (name -> price)
 export function buildPriceList(items: Product[]): PriceList {
-  // TODO
+  return items.reduce((list , product) => {
+    list[product.name] = product.price;
+    return list;
+  }, {} as PriceList);
 }
 
 // @ts-expect-error id was omitted from NewProduct
