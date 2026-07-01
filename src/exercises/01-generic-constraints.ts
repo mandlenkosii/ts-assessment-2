@@ -18,7 +18,7 @@ export interface Product {
  * Asking for a key that doesn't exist must be a COMPILE error. */
 
 // TODO: <T, K extends keyof T>(obj: T, key: K): T[K]
-export function getField<___>(obj: ___, key: ___): ___ {
+export function getField<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key];
 }
 
@@ -28,8 +28,9 @@ export function getField<___>(obj: ___, key: ___): ___ {
  * `price` must be a compile error. Do not mutate `obj`. */
 
 // TODO: <T, K extends keyof T>(obj: T, key: K, value: T[K]): T
-export function withField<___>(obj: ___, key: ___, value: ___): ___ {
+export function withField<T, K extends keyof T>(obj: T, key: K, value: T[K]): T {
   // TODO: return a new object (spread) with key replaced by value
+  return { ...obj, [key]: value };
 }
 
 /* ---- 1c. Constrained-to-number-fields sum ----
@@ -43,9 +44,13 @@ export function withField<___>(obj: ___, key: ___, value: ___): ___ {
  *   OR the simpler: restrict K to keys of T whose value is number using
  *   a mapped helper. Choose an approach that makes sumBy(products,"name") error. */
 
+type NumberKeys<T> = {
+  [K in keyof T]: T[K] extends number ? K : never
+}[keyof T];
+
 // TODO: type so only number-valued keys are accepted; returns number
-export function sumBy<___>(items: ___, key: ___): number {
-  // TODO
+export function sumBy<T, K extends NumberKeys<T>>(items: T[], key: K): number {
+  return items.reduce((sum, item) => sum + (item[key] as number), 0);
 }
 
 export const products: Product[] = [
